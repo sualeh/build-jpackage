@@ -2,6 +2,10 @@ plugins {
   id 'application'
 }
 
+group = 'us.fatehi'
+version = '0.0.1'  
+description = """Simple console app to greet you"""
+
 repositories {
   jcenter()
 }
