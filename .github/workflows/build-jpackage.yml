@@ -28,4 +28,6 @@ jobs:
 # BUILD FOR DISTRIBUTION
     - id: build
       name: Build distribution
-      run: ./gradlew distZip
+      run: |
+        ./gradlew distZip
+        ls -alR ./build/distribution
