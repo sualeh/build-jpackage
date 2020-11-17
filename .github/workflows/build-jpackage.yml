@@ -25,7 +25,7 @@ jobs:
 # BUILD FOR DISTRIBUTION
     - id: build-linux
       name: Build distribution on Linux
-      if: ${{ runner.os == 'Linux' }}
+      if: ${{ runner.os == 'Linux-disabled' }}
       run: |
         ./gradlew distZip
         ls -alR ./consoleapp/build/distributions
@@ -37,7 +37,7 @@ jobs:
       run: |
         .\gradlew.bat distZip
         unzip .\consoleapp\build\distributions\*.zip -d .\consoleapp\build\distributions
-        jpackage --verbose @jpackage.cfg @jpackage-win.cfg
+        jpackage --verbose "@jpackage.cfg" "@jpackage-win.cfg"
 
 # CREATE GITHUB RELEASE AND ADD ASSETS
     - id: create-release
@@ -51,7 +51,7 @@ jobs:
         draft: false
         prerelease: false
     - id: upload-release-zip
-      if: ${{ runner.os }} == 'Linux'
+      if: ${{ runner.os }} == 'Linux-disabled'
       name: Upload consoleapp distribution zip
       uses: actions/upload-release-asset@latest
       env:
