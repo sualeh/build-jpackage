@@ -37,6 +37,7 @@ jobs:
         gradle -v
         gradle build
         jpackage --verbose "@jpackage.cfg" "@jpackage-win.cfg"
+        dir .\consoleapp\build\distributions
 
 # CREATE GITHUB RELEASE AND ADD ASSETS
     - id: create-release
@@ -49,9 +50,9 @@ jobs:
         release_name: release-${{ github.sha }}
         draft: false
         prerelease: false
-    - id: upload-release-zip
+    - id: upload-release-linux
+      name: Upload consoleapp Linux distribution
       if: ${{ runner.os == 'Linux-disabled' }}
-      name: Upload consoleapp distribution zip
       uses: actions/upload-release-asset@latest
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
