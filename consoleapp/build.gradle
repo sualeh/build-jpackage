@@ -24,3 +24,10 @@ application {
 tasks.named('test') {
   useJUnitPlatform()
 }
+
+task copyToLib(type: Copy) {
+    into "${buildDir}/libs"
+    from configurations.runtimeClasspath
+}
+
+build.dependsOn(copyToLib)
