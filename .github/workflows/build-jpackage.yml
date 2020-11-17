@@ -1,7 +1,7 @@
 name: Create Release
 
 on: [push]
-  
+
 jobs:
   build:
     name: Create Release
@@ -31,3 +31,33 @@ jobs:
       run: |
         ./gradlew distZip
         ls -alR ./consoleapp/build/distributions
+    - id: unzip
+      name: Unzip distribution
+      run: |
+        unzip ./consoleapp/build/distributions/*.zip -d ./consoleapp/build/distributions
+    - id: jpackage
+      name: Build installer using jpackage
+      run: |
+        jpackage --verbose @jpackage.cfg @jpackage-linux.cfg
+
+# CREATE GITHUB RELEASE AND ADD ASSETS
+    - id: create-release
+      name: Create GitHub release
+      uses: actions/create-release@latest
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: ${{ github.ref }}
+        draft: false
+        prerelease: false
+    - id: upload-release-zip
+      name: Upload consoleapp distribution zip
+      uses: actions/upload-release-asset@latest
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create-release.outputs.upload_url }}
+        asset_path: ./consoleapp/build/distributions/consoleapp_0.0.1-1_amd64.deb
+        asset_name: consoleapp_0.0.1-1_amd64.deb
+        asset_content_type: application/x-binary
