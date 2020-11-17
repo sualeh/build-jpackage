@@ -1,0 +1,31 @@
+name: Create Release
+
+on: [push]
+  
+jobs:
+  build:
+    name: Create Release
+    runs-on: ubuntu-latest
+    steps:
+
+# SETUP BUILD ENVIRONMENT
+    - id: checkout-code
+      name: Checkout code
+      uses: actions/checkout@v2
+    - id: setup-jdk
+      name: Setup JDK
+      uses: actions/setup-java@v1
+      with:
+        java-version: 14
+    - id: show-environment
+      name: Show environment
+      run: |
+        echo github.repository: ${{ github.repository }}
+        echo github.ref: ${{ github.head_ref || github.ref }}
+        echo github.sha: ${{ github.sha }}
+        gradlew -v
+
+# BUILD FOR DISTRIBUTION
+    - id: build
+      name: Build distribution
+      run: ./gradlew distZip
