@@ -6,6 +6,7 @@ jobs:
   build:
     name: Create Release
     runs-on: ${{ matrix.os }}
+    continue-on-error: true
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
@@ -23,16 +24,16 @@ jobs:
 
 # BUILD FOR DISTRIBUTION
     - id: build-linux
-      if: ${{ runner.os }} == 'Linux'
       name: Build distribution on Linux
+      if: ${{ runner.os == 'Linux' }}
       run: |
         ./gradlew distZip
         ls -alR ./consoleapp/build/distributions
         unzip ./consoleapp/build/distributions/*.zip -d ./consoleapp/build/distributions
         jpackage --verbose @jpackage.cfg @jpackage-linux.cfg
     - id: build-win
-      if: ${{ runner.os }} == 'Windows'
       name: Build distribution on Windows
+      if: ${{ runner.os == 'Windows' }}
       run: |
         .\gradlew.bat distZip
         unzip .\consoleapp\build\distributions\*.zip -d .\consoleapp\build\distributions
