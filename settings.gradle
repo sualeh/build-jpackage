@@ -8,4 +8,4 @@
  */
 
 rootProject.name = 'build-jpackage'
-include('app')
+include('consoleapp')

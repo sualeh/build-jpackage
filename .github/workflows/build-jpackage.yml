@@ -30,4 +30,4 @@ jobs:
       name: Build distribution
       run: |
         ./gradlew distZip
-        ls -alR ./build/distribution
+        ls -alR ./consoleapp/build/distributions
