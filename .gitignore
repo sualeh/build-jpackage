@@ -1,5 +1,6 @@
 .gradle/
 **/build/
+**/bin/
 !src/**/build/
 
 # Ignore Gradle GUI config
@@ -41,3 +42,9 @@ hs_err_pid*
 .project
 .classpath
 .settings/
+
+# Ignore Gradle project-specific cache directory
+.gradle
+
+# Ignore Gradle build output directory
+build
