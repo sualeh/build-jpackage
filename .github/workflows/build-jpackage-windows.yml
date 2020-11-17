@@ -1,0 +1,49 @@
+name: Create Release on Windows
+
+on: [push]
+
+jobs:
+  build:
+    name: Create Release on Windows
+    runs-on: windows-latest
+    steps:
+
+# SETUP BUILD ENVIRONMENT
+    - id: checkout-code
+      name: Checkout code
+      uses: actions/checkout@v2
+    - id: setup-jdk
+      name: Setup JDK
+      uses: actions/setup-java@v1
+      with:
+        java-version: 15
+
+# BUILD FOR DISTRIBUTION
+    - id: build
+      name: Build distribution
+      run: |
+        gradle -v
+        gradle build
+        jpackage --verbose "@jpackage.cfg" "@jpackage-win.cfg"
+
+# CREATE GITHUB RELEASE AND ADD ASSETS
+    - id: create-release
+      name: Create GitHub release
+      uses: actions/create-release@latest
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: windows-${{ github.sha }}
+        release_name: windows-${{ github.sha }}
+        draft: false
+        prerelease: false
+    - id: upload-release
+      name: Upload consoleapp distribution
+      uses: actions/upload-release-asset@latest
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create-release.outputs.upload_url }}
+        asset_path: ./consoleapp/build/distributions/consoleapp-0.0.1.exe
+        asset_name: consoleapp-0.0.1.exe
+        asset_content_type: application/x-binary

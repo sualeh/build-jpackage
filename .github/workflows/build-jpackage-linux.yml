@@ -1,15 +1,11 @@
-name: Create Release
+name: Create Release on Linux
 
 on: [push]
 
 jobs:
   build:
-    name: Create Release
-    runs-on: ${{ matrix.os }}
-    continue-on-error: true
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest]
+    name: Create Release on Linux
+    runs-on: ubuntu-latest
     steps:
 
 # SETUP BUILD ENVIRONMENT
@@ -23,21 +19,12 @@ jobs:
         java-version: 15
 
 # BUILD FOR DISTRIBUTION
-    - id: build-linux
-      name: Build distribution on Linux
-      if: ${{ runner.os == 'Linux-disabled' }}
-      run: |
-        gradle -v
-        gradle build
-        jpackage --verbose @jpackage.cfg @jpackage-linux.cfg
-    - id: build-win
-      name: Build distribution on Windows
-      if: ${{ runner.os == 'Windows' }}
+    - id: build
+      name: Build distribution
       run: |
         gradle -v
         gradle build
         jpackage --verbose "@jpackage.cfg" "@jpackage-win.cfg"
-        dir .\consoleapp\build\distributions
 
 # CREATE GITHUB RELEASE AND ADD ASSETS
     - id: create-release
@@ -46,18 +33,17 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: release-${{ github.sha }}
-        release_name: release-${{ github.sha }}
+        tag_name: linux-${{ github.sha }}
+        release_name: linux-${{ github.sha }}
         draft: false
         prerelease: false
-    - id: upload-release-linux
-      name: Upload consoleapp Linux distribution
-      if: ${{ runner.os == 'Linux-disabled' }}
+    - id: upload-release
+      name: Upload consoleapp distribution
       uses: actions/upload-release-asset@latest
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: ${{ steps.create-release.outputs.upload_url }}
+        upload_url: ${{ steps.create-release-linux.outputs.upload_url }}
         asset_path: ./consoleapp/build/distributions/consoleapp_0.0.1-1_amd64.deb
-        asset_name: consoleapp_0.0.1-1_amd64.deb
+        asset_name: consoleapp-0.0.1_amd64.deb
         asset_content_type: application/x-binary
