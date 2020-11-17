@@ -5,7 +5,10 @@ on: [push]
 jobs:
   build:
     name: Create Release
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
     steps:
 
 # SETUP BUILD ENVIRONMENT
@@ -26,19 +29,21 @@ jobs:
         ./gradlew -v
 
 # BUILD FOR DISTRIBUTION
-    - id: build
-      name: Build distribution
+    - id: build-linux
+      if: ${{ runner.os }} == 'Linux'
+      name: Build distribution on Linux
       run: |
         ./gradlew distZip
         ls -alR ./consoleapp/build/distributions
-    - id: unzip
-      name: Unzip distribution
-      run: |
         unzip ./consoleapp/build/distributions/*.zip -d ./consoleapp/build/distributions
-    - id: jpackage
-      name: Build installer using jpackage
-      run: |
         jpackage --verbose @jpackage.cfg @jpackage-linux.cfg
+    - id: build-win
+      if: ${{ runner.os }} == 'Windows'
+      name: Build distribution on Windows
+      run: |
+        .\gradlew.bat distZip
+        unzip .\consoleapp\build\distributions\*.zip -d .\consoleapp\build\distributions
+        jpackage --verbose @jpackage.cfg @jpackage-win.cfg
 
 # CREATE GITHUB RELEASE AND ADD ASSETS
     - id: create-release
@@ -47,11 +52,12 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: ${{ github.ref }}
-        release_name: ${{ github.ref }}
+        tag_name: ${{ github.sha }}
+        release_name: ${{ github.sha }}
         draft: false
         prerelease: false
     - id: upload-release-zip
+      if: ${{ runner.os }} == 'Linux'
       name: Upload consoleapp distribution zip
       uses: actions/upload-release-asset@latest
       env:
