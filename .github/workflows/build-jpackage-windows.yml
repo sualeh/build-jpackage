@@ -24,7 +24,7 @@ jobs:
       run: |
         gradle -v
         gradle build
-        jpackage --verbose "@jpackage.cfg" "@jpackage-win.cfg"
+        jpackage --verbose "@jpackage.cfg" "@jpackage-windows.cfg"
 
 # CREATE GITHUB RELEASE AND ADD ASSETS
     - id: create-release
