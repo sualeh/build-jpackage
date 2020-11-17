@@ -8,7 +8,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu-latest, windows-latest]
     steps:
 
 # SETUP BUILD ENVIRONMENT
@@ -19,14 +19,7 @@ jobs:
       name: Setup JDK
       uses: actions/setup-java@v1
       with:
-        java-version: 14
-    - id: show-environment
-      name: Show environment
-      run: |
-        echo github.repository: ${{ github.repository }}
-        echo github.ref: ${{ github.head_ref || github.ref }}
-        echo github.sha: ${{ github.sha }}
-        ./gradlew -v
+        java-version: 15
 
 # BUILD FOR DISTRIBUTION
     - id: build-linux
