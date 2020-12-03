@@ -32,7 +32,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         path: ./consoleapp/build/distributions/consoleapp_0.0.1-1_amd64.deb
-        name: consoleapp-0.0.1.deb
+        name: linux-installer
         retention-days: 1
 
 
@@ -65,7 +65,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         path: ./consoleapp/build/distributions/consoleapp-0.0.1.msi
-        name: consoleapp-0.0.1.msi
+        name: windows-installer
         retention-days: 1
 
 
@@ -80,17 +80,20 @@ jobs:
       name: Download Linux installer
       uses: actions/download-artifact@v2
       with:
-        name: consoleapp-0.0.1.deb
+        name: linux-installer
 
     - id: download-windows-installer
       name: Download Windows installer
       uses: actions/download-artifact@v2
       with:
-        name: consoleapp-0.0.1.msi
+        name: windows-installer
 
-    - id: show-downloaded-files
-      name: Display structure of downloaded files
-      run: ls -alR
+    - id: rename-downloaded-files
+      name: Rename downloaded files
+      run: |
+        ls -alR
+        mv consoleapp_0.0.1-1_amd64.deb consoleapp_0.0.1.deb
+        ls -alR
 
 # CREATE GITHUB RELEASE AND ADD ASSETS
     - id: create-release
