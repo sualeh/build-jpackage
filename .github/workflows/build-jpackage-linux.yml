@@ -1,6 +1,6 @@
 name: Create Release on Linux
 
-on: [push]
+on: workflow_dispatch
 
 jobs:
   build:

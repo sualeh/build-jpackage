@@ -1,10 +1,10 @@
-name: Create Release on Linux
+name: Build Installers
 
-on: [push]
+on: workflow_dispatch
 
 jobs:
   build-linux-installer:
-    name: Create Release on Linux
+    name: Build Installer on Linux
     runs-on: ubuntu-latest
     steps:
 
@@ -26,31 +26,18 @@ jobs:
         gradle build
         jpackage --verbose "@jpackage.cfg" "@jpackage-linux.cfg"
 
-# CREATE GITHUB RELEASE AND ADD ASSETS
-    - id: create-release
-      name: Create GitHub release
-      uses: actions/create-release@latest
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+# SAVE INSTALLER
+    - id: upload-installer
+      name: Upload installer
+      uses: actions/upload-artifact@v2
       with:
-        tag_name: linux-${{ github.sha }}
-        release_name: linux-${{ github.sha }}
-        draft: false
-        prerelease: false
-    - id: upload-release
-      name: Upload consoleapp distribution
-      uses: actions/upload-release-asset@latest
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create-release.outputs.upload_url }}
-        asset_path: ./consoleapp/build/distributions/consoleapp_0.0.1-1_amd64.deb
-        asset_name: consoleapp-0.0.1_amd64.deb
-        asset_content_type: application/x-binary
+        path: ./consoleapp/build/distributions/consoleapp_0.0.1-1_amd64.deb
+        name: consoleapp-0.0.1_amd64.deb
+        retention-days: 1
 
 
   build-windows-installer:
-    name: Create Release on Windows
+    name: Build Installer on Windows
     runs-on: windows-latest
     steps:
 
@@ -72,6 +59,38 @@ jobs:
         gradle build
         jpackage --verbose "@jpackage.cfg" "@jpackage-windows.cfg"
 
+# SAVE INSTALLER
+    - id: upload-installer
+      name: Upload installer
+      uses: actions/upload-artifact@v2
+      with:
+        path: ./consoleapp/build/distributions/consoleapp-0.0.1.msi
+        name: consoleapp-0.0.1.msi
+        retention-days: 1
+
+
+  create-release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    needs: [build-linux-installer, build-windows-installer]
+    steps:
+
+# DOWNLOAD INSTALLERS
+    - id: download-linux-installer
+      name: Download Linuc installer
+      uses: actions/download-artifact@v2
+      with:
+        name: consoleapp-0.0.1_amd64.deb
+
+    - id: download-windows-installer
+      name: Download Windows installer
+      uses: actions/download-artifact@v2
+      with:
+        name: consoleapp-0.0.1.msi
+
+    - name: Display structure of downloaded files
+      run: ls -R
+
 # CREATE GITHUB RELEASE AND ADD ASSETS
     - id: create-release
       name: Create GitHub release
@@ -79,17 +98,27 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: windows-${{ github.sha }}
-        release_name: windows-${{ github.sha }}
+        tag_name: release-${{ github.sha }}
+        release_name: release-${{ github.sha }}
         draft: false
         prerelease: false
-    - id: upload-release
-      name: Upload consoleapp distribution
+    - id: release-linux-installer
+      name: Release Linux installer
       uses: actions/upload-release-asset@latest
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create-release.outputs.upload_url }}
-        asset_path: ./consoleapp/build/distributions/consoleapp-0.0.1.msi
+        asset_path: consoleapp-0.0.1_amd64.deb
+        asset_name: consoleapp-0.0.1_amd64.deb
+        asset_content_type: application/x-binary
+    - id: release-windows-installer
+      name: Release Windows installer
+      uses: actions/upload-release-asset@latest
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create-release.outputs.upload_url }}
+        asset_path: consoleapp-0.0.1.msi
         asset_name: consoleapp-0.0.1.msi
         asset_content_type: application/x-binary

@@ -1,6 +1,6 @@
 name: Create Release on Windows
 
-on: [push]
+on: workflow_dispatch
 
 jobs:
   build:
