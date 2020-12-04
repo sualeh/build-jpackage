@@ -1,6 +1,10 @@
 name: Create Icons
 
-on: workflow_dispatch
+on: 
+  workflow_dispatch
+  push:
+    paths:
+      - './consoleapp/src/installer/icons/icon.svg'
 
 jobs:
   build:
