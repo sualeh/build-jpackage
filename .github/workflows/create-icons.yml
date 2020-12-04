@@ -17,6 +17,8 @@ jobs:
     - id: create-icons
       name: Create icons
       run: |
+        # Create icons
+        ls -alR
         convert -version
         convert -background none -density 64 -resize 64x64 \
         ./build-jpackage/consoleapp/src/installer/icons/icon.svg \
