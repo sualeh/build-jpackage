@@ -18,15 +18,14 @@ jobs:
       name: Create icons
       run: |
         # Create icons
-        ls -alR
         convert -version
         convert -background none -density 64 -resize 64x64 \
-        ./build-jpackage/consoleapp/src/installer/icons/icon.svg \
-        ./build-jpackage/consoleapp/src/installer/icons/icon.png
+        ./consoleapp/src/installer/icons/icon.svg \
+        ./consoleapp/src/installer/icons/icon.png
 
     - id: upload-icons
       name: Upload generated icons
       uses: actions/upload-artifact@v2
       with:
         name: icons
-        path: ./build-jpackage/consoleapp/src/installer/icons/icon.*
+        path: ./consoleapp/src/installer/icons/icon.*
