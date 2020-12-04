@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - './consoleapp/src/installer/icons/icon.svg'
+      - '**/installer/icons/icon.svg'
 
 jobs:
   build:
