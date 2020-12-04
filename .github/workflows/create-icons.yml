@@ -1,7 +1,7 @@
 name: Create Icons
 
-on: 
-  workflow_dispatch
+on:
+  workflow_dispatch:
   push:
     paths:
       - './consoleapp/src/installer/icons/icon.svg'
@@ -23,7 +23,12 @@ jobs:
       run: |
         # Create icons
         convert -version
-        convert -background none -density 1000 -resize 64x64 \
+        convert -background transparent -density 1000 \
+        -resize 64x64 \
+        ./consoleapp/src/installer/icons/icon.svg \
+        ./consoleapp/src/installer/icons/icon.png
+        convert -background transparent -density 1000 \
+        -define icon:auto-resize -colors 256 \
         ./consoleapp/src/installer/icons/icon.svg \
         ./consoleapp/src/installer/icons/icon.png
 
