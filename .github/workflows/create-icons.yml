@@ -19,7 +19,7 @@ jobs:
 
 # CREATE ICONS
     - id: create-icons
-      name: Create icons
+      name: Create icons for different platforms
       run: |
         # Create icons for different platforms
         convert -version
@@ -38,3 +38,13 @@ jobs:
       with:
         name: icons
         path: ./consoleapp/src/installer/icons/icon.*
+
+    - id: push-icons
+      name: Commit icons to repository
+      run: |
+        # Commit icons to repository
+        git config --global user.name "Sualeh Fatehi"
+        git config --global user.email "sualeh@hotmail.com"
+        git add ./consoleapp/src/installer/icons/icon.*
+        git commit -m "Create icons for different platforms"
+        git push
