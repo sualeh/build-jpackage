@@ -14,7 +14,16 @@ jobs:
       uses: actions/checkout@v2
 
 # CREATE ICONS
-    - id: build
-      name: Build distribution
+    - id: create-icons
+      name: Create icons
       run: |
         convert -version
+        convert -background none -density 64 -resize 64x64 \
+        ./build-jpackage/consoleapp/src/installer/icons/icon.svg \
+        ./build-jpackage/consoleapp/src/installer/icons/icon.png
+
+    - id: Upload generated icons
+      uses: actions/upload-artifact@v2
+      with:
+        name: icons
+        path: ./build-jpackage/consoleapp/src/installer/icons/icon.*
