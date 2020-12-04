@@ -21,7 +21,7 @@ jobs:
     - id: create-icons
       name: Create icons
       run: |
-        # Create icons
+        # Create icons for different platforms
         convert -version
         convert -background transparent -density 1000 \
         -resize 64x64 \
@@ -30,7 +30,7 @@ jobs:
         convert -background transparent -density 1000 \
         -define icon:auto-resize -colors 256 \
         ./consoleapp/src/installer/icons/icon.svg \
-        ./consoleapp/src/installer/icons/icon.png
+        ./consoleapp/src/installer/icons/icon.ico
 
     - id: upload-icons
       name: Upload generated icons
