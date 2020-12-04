@@ -8,20 +8,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-# SETUP BUILD ENVIRONMENT
+# CHECKOUT CODE
     - id: checkout-code
       name: Checkout code
       uses: actions/checkout@v2
-    - id: setup-jdk
-      name: Setup JDK
-      uses: actions/setup-java@v1
-      with:
-        java-version: 15
 
-# BUILD FOR DISTRIBUTION
+# CREATE ICONS
     - id: build
       name: Build distribution
       run: |
-        sudo apt-get -qq update
-        sudo apt-get -q install imagemagick
         convert -version
