@@ -19,7 +19,7 @@ jobs:
       run: |
         # Create icons
         convert -version
-        convert -background none -density 64 -resize 64x64 \
+        convert -background none -density 1000 -resize 64x64 \
         ./consoleapp/src/installer/icons/icon.svg \
         ./consoleapp/src/installer/icons/icon.png
 
