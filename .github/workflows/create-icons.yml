@@ -22,7 +22,8 @@ jobs:
         ./build-jpackage/consoleapp/src/installer/icons/icon.svg \
         ./build-jpackage/consoleapp/src/installer/icons/icon.png
 
-    - id: Upload generated icons
+    - id: upload-icons
+      name: Upload generated icons
       uses: actions/upload-artifact@v2
       with:
         name: icons
