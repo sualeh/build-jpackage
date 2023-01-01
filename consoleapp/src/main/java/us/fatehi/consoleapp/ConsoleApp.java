@@ -24,10 +24,6 @@ import picocli.shell.jline3.PicocliCommands;
  */
 public class ConsoleApp {
 
-  private static Path workDir() {
-    return Paths.get(System.getProperty("user.dir"));
-  }
-
   public static void main(final String[] args) throws Throwable {
 
     if (args != null && args.length > 0) {
@@ -43,7 +39,7 @@ public class ConsoleApp {
     // set up picocli commands
     final CliCommands commands = new CliCommands();
     final CommandLine cmd = new CommandLine(commands);
-    final PicocliCommands picocliCommands = new PicocliCommands(ConsoleApp::workDir, cmd);
+    final PicocliCommands picocliCommands = new PicocliCommands(cmd);
 
     final Parser parser = new DefaultParser();
     try (final Terminal terminal = TerminalBuilder.builder().build()) {
@@ -61,8 +57,8 @@ public class ConsoleApp {
       builtins.setLineReader(reader);
       commands.setLineReader(reader);
 
-      String prompt = "prompt> ";
-      String rightPrompt = null;
+      final String prompt = "prompt> ";
+      final String rightPrompt = null;
 
       // start the shell and process input until the user quits with Ctrl-D
       String line;
@@ -71,14 +67,18 @@ public class ConsoleApp {
           systemRegistry.cleanUp();
           line = reader.readLine(prompt, rightPrompt, (MaskingCallback) null, null);
           systemRegistry.execute(line);
-        } catch (UserInterruptException e) {
+        } catch (final UserInterruptException e) {
           // Ignore
-        } catch (EndOfFileException e) {
+        } catch (final EndOfFileException e) {
           return;
-        } catch (Exception e) {
+        } catch (final Exception e) {
           systemRegistry.trace(e);
         }
       }
     }
+  }
+
+  private static Path workDir() {
+    return Paths.get(System.getProperty("user.dir"));
   }
 }
