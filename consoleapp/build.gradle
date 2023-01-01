@@ -31,3 +31,6 @@ task copyToLib(type: Copy) {
 }
 
 build.dependsOn(copyToLib)
+distZip.dependsOn(copyToLib)
+distTar.dependsOn(copyToLib)
+startScripts.dependsOn(copyToLib)
