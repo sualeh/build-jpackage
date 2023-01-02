@@ -3,8 +3,7 @@ name: Build Installers
 on:
   workflow_dispatch:
   schedule:
-    # * is a special character in YAML so you have to quote this string
-    - cron: '0 0 8 ? * SUN *'
+    - cron: '0 10 1/6 * *'
 
 jobs:
   build-linux-installer:
@@ -102,14 +101,24 @@ jobs:
         ls -alR
 
 # CREATE GITHUB RELEASE AND ADD ASSETS
+    - id: tag
+      name: Move example-release tag
+      shell: bash
+      if: false
+      run: |
+        # Move tag
+        git tag -d example-release
+        git push --delete origin example-release
+        git tag -a example-release -m "Example of a Release"
+        git push --follow-tags
     - id: create-release
       name: Create GitHub release
       uses: actions/create-release@latest
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: release-${{ github.sha }}
-        release_name: release-${{ github.sha }}
+        tag_name: example-release
+        release_name: example-release
         draft: false
         prerelease: false
     - id: release-linux-installer
